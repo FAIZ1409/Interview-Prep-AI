@@ -1,0 +1,212 @@
+🚀 Build an AI-Powered Smart Interview Preparation Android App
+
+You are a senior Android + Full Stack + AI engineer.
+Build a production-ready Android application for an AI-powered Smart Interview Preparation Platform designed for Software Engineering (SDE), AI, and System Design roles.
+
+🎯 Core Objective
+
+Create an Android app that simulates real interviews, evaluates technical + communication skills, and generates personalized improvement plans using AI.
+
+The app should feel like a real interviewer, not just a question bank.
+
+📱 Platform & UI
+
+Platform: Android (Flutter preferred)
+
+UI Style: Clean, modern, minimal (Material UI)
+
+Authentication: Email + Google Login
+
+Dashboard-based navigation
+
+🧠 Core Features (MUST IMPLEMENT)
+1️⃣ AI Mock Interview Engine
+
+Role-based interview selection:
+
+SDE
+
+Backend
+
+Full Stack
+
+AI / ML
+
+AI acts as a human interviewer
+
+Ask:
+
+DSA questions
+
+System Design questions
+
+Behavioral questions
+
+2️⃣ Speech & Communication Analysis
+
+Record user voice answers
+
+Use speech-to-text
+
+Analyze:
+
+Filler words (um, uh, like)
+
+Confidence score
+
+Speaking speed
+
+Clarity
+
+Display results using charts & scores
+
+3️⃣ Code Evaluation System
+
+In-app coding editor
+
+Supports Java / Python / C++
+
+Auto-evaluate using:
+
+Hidden test cases
+
+Time & space complexity analysis
+
+Show:
+
+Pass/fail results
+
+Optimized solution
+
+Improvement tips
+
+4️⃣ Resume-to-Question Mapping
+
+Upload resume (PDF)
+
+Extract skills using NLP
+
+Generate personalized interview questions based on resume
+
+Highlight weak skill areas
+
+5️⃣ AI Feedback & Improvement Plan
+
+After each interview:
+
+Strengths
+
+Weaknesses
+
+Technical gaps
+
+Communication gaps
+
+Generate:
+
+Daily practice plan
+
+Topic-wise roadmap
+
+Suggested resources
+
+6️⃣ Recruiter Mode (Advanced Feature)
+
+Separate dashboard for recruiters
+
+View:
+
+Candidate interview scores
+
+Skill breakdown
+
+Confidence metrics
+
+Export reports (PDF)
+
+🧩 Tech Stack (STRICT)
+Frontend
+
+Flutter (Android-focused)
+
+State management (Provider / Riverpod)
+
+Backend
+
+Node.js (Express) OR Spring Boot
+
+REST APIs
+
+AI & ML
+
+OpenAI API for interview & feedback
+
+Whisper / Speech-to-Text
+
+NLP for resume parsing
+
+Custom scoring logic
+
+Database
+
+PostgreSQL (users, interviews)
+
+MongoDB (AI feedback, transcripts)
+
+Deployment
+
+Backend: AWS / GCP
+
+App ready for Play Store
+
+🧱 Architecture Requirements
+
+Clean Architecture
+
+Modular services
+
+Secure API keys
+
+Scalable database design
+
+Proper folder structure
+
+Comments + documentation
+
+📊 Output Expectations
+
+Complete Flutter Android app
+
+Backend APIs with documentation
+
+Sample interview flows
+
+Mock data for testing
+
+README explaining:
+
+Setup
+
+Features
+
+AI flow
+
+Future enhancements
+
+🎓 Final Year Project Readiness
+
+Ensure the app:
+
+Is industry-grade
+
+Solves a real hiring problem
+
+Demonstrates:
+
+AI integration
+
+System design
+
+Mobile development
+
+Scalable backend
