@@ -83,7 +83,13 @@ export function registerChatRoutes(app: Express): void {
       // Stream response from OpenAI
       const stream = await openai.chat.completions.create({
         model: "gpt-5.1",
-        messages: chatMessages,
+        messages: [
+          {
+            role: "system",
+            content: "You are a professional and supportive interview coach. Your goal is to conduct a realistic mock interview. Ask one question at a time, wait for the response, and occasionally provide brief, encouraging feedback or follow-up questions to dig deeper. Keep your tone professional but conversational. Focus on evaluating technical skills, problem-solving, and communication."
+          },
+          ...chatMessages
+        ],
         stream: true,
         max_completion_tokens: 2048,
       });

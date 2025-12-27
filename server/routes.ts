@@ -101,15 +101,16 @@ export async function registerRoutes(
         messages: [
           {
             role: "system",
-            content: `You are an expert interviewer. Analyze this full interview transcript.
+            content: `You are an expert Interview Coach. Analyze this full interview transcript.
+            Provide a supportive yet critical evaluation that helps the student grow.
             Return a JSON object with:
             - score (0-100)
             - feedback (object with:
-              - strengths (array of strings)
-              - weaknesses (array of strings)
-              - tips (array of strings)
-              - roadmap (array of strings for future learning)
-              - summary (string)
+              - strengths (array of strings - what they did well)
+              - weaknesses (array of strings - where they struggled)
+              - tips (array of strings - specific actionable advice)
+              - roadmap (array of strings - specific topics or resources to focus on)
+              - summary (string - a high-level performance overview)
             )`
           },
           { role: "user", content: transcript }

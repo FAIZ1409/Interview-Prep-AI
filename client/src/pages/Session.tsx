@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { useParams } from "wouter";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { useParams, useLocation } from "wouter";
 import { useInterview, useCompleteInterview } from "@/hooks/use-interviews";
 import { useChatStream } from "@/hooks/use-chat-stream";
 import { Layout } from "@/components/Layout";
@@ -7,18 +7,85 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Mic, Send, Code, MessageSquare, Terminal } from "lucide-react";
+import { Mic, Send, Code, MessageSquare, Terminal, Volume2, VolumeX } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function Session() {
   const { id } = useParams();
+  const [, setLocation] = useLocation();
   const interviewId = Number(id);
   const { data: interview } = useInterview(interviewId);
   const { messages, sendMessage, isStreaming, currentStream } = useChatStream(interview?.conversationId || undefined);
+  const { mutate: completeInterview } = useCompleteInterview();
+  
   const [input, setInput] = useState("");
   const [code, setCode] = useState("// Write your solution here...\n\nfunction solution() {\n  \n}");
   const [activeTab, setActiveTab] = useState<"chat" | "code">("chat");
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(true);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
+  
   const scrollRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<any>(null);
+  const synthRef = useRef<SpeechSynthesis | null>(window.speechSynthesis);
+
+  // Initialize Speech Recognition
+  useEffect(() => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setInput(transcript);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onerror = () => setIsListening(false);
+      recognitionRef.current.onend = () => setIsListening(false);
+    }
+  }, []);
+
+  // AI Voice (TTS)
+  useEffect(() => {
+    if (isSpeaking && !isStreaming && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.role === 'assistant') {
+        const utterance = new SpeechSynthesisUtterance(lastMessage.content);
+        synthRef.current?.speak(utterance);
+      }
+    }
+    
+    return () => {
+      synthRef.current?.cancel();
+    };
+  }, [messages, isStreaming, isSpeaking]);
+
+  const toggleListening = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+    } else {
+      setIsListening(true);
+      recognitionRef.current?.start();
+    }
+  };
+
+  const handleExit = async () => {
+    completeInterview(interviewId);
+    setLocation("/practice");
+  };
   
   // Auto-scroll to bottom of chat
   useEffect(() => {
@@ -56,10 +123,42 @@ export default function Session() {
           </div>
         </div>
         <div className="flex gap-2">
-           <Button variant="ghost" size="sm" className="hidden md:flex">Exit</Button>
-           <Button size="sm" className="bg-red-500 hover:bg-red-600 text-white border-none shadow-none">End Session</Button>
+           <Button 
+             variant="ghost" 
+             size="sm" 
+             className="hidden md:flex"
+             onClick={() => setIsSpeaking(!isSpeaking)}
+           >
+             {isSpeaking ? <Volume2 className="w-4 h-4 mr-2" /> : <VolumeX className="w-4 h-4 mr-2" />}
+             {isSpeaking ? "Voice On" : "Voice Off"}
+           </Button>
+           <Button 
+             size="sm" 
+             variant="destructive"
+             onClick={() => setShowExitConfirm(true)}
+             className="shadow-none"
+           >
+             End Session
+           </Button>
         </div>
       </header>
+
+      <AlertDialog open={showExitConfirm} onOpenChange={setShowExitConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>End Interview Session?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will end your current interview and generate your performance report. You cannot resume this session.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Continue Interview</AlertDialogCancel>
+            <AlertDialogAction onClick={handleExit} className="bg-destructive text-destructive-foreground">
+              End and Analyze
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
@@ -114,7 +213,12 @@ export default function Session() {
                 className="pr-24 min-h-[60px] resize-none rounded-xl border-border focus:ring-primary/20 shadow-sm"
               />
               <div className="absolute bottom-2 right-2 flex gap-1">
-                 <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-primary">
+                 <Button 
+                   size="icon" 
+                   variant={isListening ? "default" : "ghost"} 
+                   className={`h-8 w-8 ${isListening ? 'animate-pulse text-primary-foreground' : 'text-muted-foreground hover:text-primary'}`}
+                   onClick={toggleListening}
+                 >
                    <Mic className="w-4 h-4" />
                  </Button>
                  <Button size="icon" onClick={handleSend} disabled={!input.trim() || isStreaming} className="h-8 w-8 rounded-lg shadow-sm">
