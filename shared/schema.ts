@@ -25,6 +25,8 @@ export const resumes = pgTable("resumes", {
   fileName: text("file_name").notNull(),
   content: text("content").notNull(),
   skills: jsonb("skills"), // string[]
+  score: integer("score"),
+  feedback: jsonb("feedback"), // { strengths: [], weaknesses: [], summary: "" }
   createdAt: timestamp("created_at").defaultNow(),
 });
 

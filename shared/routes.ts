@@ -47,6 +47,23 @@ export const api = {
         200: z.custom<typeof interviews.$inferSelect>(),
         404: errorSchemas.notFound,
       },
+    },
+    analyze: {
+      method: 'POST' as const,
+      path: '/api/interviews/analyze',
+      input: z.object({
+        text: z.string(),
+      }),
+      responses: {
+        200: z.object({
+          confidence: z.number(),
+          clarity: z.number(),
+          fillerWords: z.array(z.string()),
+          feedback: z.string(),
+          tips: z.array(z.string()),
+        }),
+        400: errorSchemas.validation,
+      },
     }
   },
   resumes: {
