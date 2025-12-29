@@ -171,7 +171,7 @@ export async function registerRoutes(
     // We could use pdf-parse package if needed, but for MVP we might mock or just store text if user sends it.
     // Assuming file content is text for simple MVP or handle PDF parsing later.
     
-    const content = req.file.buffer.toString('utf-8'); // Naive text extraction
+    const content = req.file.buffer.toString('utf-8').replace(/\0/g, ''); // Naive text extraction, strip null bytes
     
     // Analyze resume with AI
     let score = 0;
