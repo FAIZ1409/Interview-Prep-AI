@@ -34,10 +34,34 @@ export default function Session() {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(true);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [postureStatus, setPostureStatus] = useState<"correct" | "incorrect">("correct");
   
+  const videoRef = useRef<HTMLVideoElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const synthRef = useRef<SpeechSynthesis | null>(window.speechSynthesis);
+
+  // Video and Posture Check
+  useEffect(() => {
+    async function setupCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (err) {
+        console.error("Camera error:", err);
+      }
+    }
+    setupCamera();
+
+    // Mock posture check logic
+    const interval = setInterval(() => {
+      setPostureStatus(Math.random() > 0.8 ? "incorrect" : "correct");
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Initialize Speech Recognition
   useEffect(() => {
@@ -163,6 +187,15 @@ export default function Session() {
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
         
+        {/* Video Overlay - Added for live posture analysis */}
+        <div className="absolute bottom-20 right-4 w-48 h-36 rounded-lg overflow-hidden border-2 z-20 shadow-xl transition-colors duration-300" 
+             style={{ borderColor: postureStatus === 'correct' ? 'rgb(34 197 94)' : 'rgb(239 68 68)' }}>
+          <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover grayscale" />
+          <div className={`absolute bottom-0 left-0 right-0 py-1 text-[10px] text-center font-bold text-white uppercase ${postureStatus === 'correct' ? 'bg-green-500' : 'bg-red-500'}`}>
+            Posture: {postureStatus}
+          </div>
+        </div>
+
         {/* Chat Area - Always visible on desktop, tabbed on mobile */}
         <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${activeTab === 'chat' ? 'flex' : 'hidden md:flex'}`}>
           <div className="flex-1 overflow-y-auto p-4 space-y-6" ref={scrollRef}>

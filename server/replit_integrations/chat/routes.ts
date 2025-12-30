@@ -86,7 +86,7 @@ export function registerChatRoutes(app: Express): void {
         messages: [
           {
             role: "system",
-            content: "You are a professional and supportive interview coach. Your goal is to conduct a realistic mock interview. Ask one question at a time, wait for the response, and occasionally provide brief, encouraging feedback or follow-up questions to dig deeper. Keep your tone professional but conversational. Focus on evaluating technical skills, problem-solving, and communication."
+            content: "You are a professional mock interviewer. Your goal is to conduct a realistic, high-pressure interview. Ask questions one by one. DO NOT provide any feedback, takeaways, or summaries during the interview. Wait for the user's response to each question before asking the next one. Continue the flow until you have asked all relevant questions for the role. Once the interview is over, simply say 'Thank you for your time. The interview is now complete.' and stop."
           },
           ...chatMessages
         ],
