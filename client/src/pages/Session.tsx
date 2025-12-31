@@ -75,6 +75,12 @@ export default function Session() {
         const transcript = event.results[0][0].transcript;
         setInput(transcript);
         setIsListening(false);
+        // Auto-submit after voice input
+        if (transcript.trim()) {
+          sendMessage(transcript);
+          setInput("");
+          synthRef.current?.cancel();
+        }
       };
 
       recognitionRef.current.onerror = () => setIsListening(false);
@@ -88,6 +94,7 @@ export default function Session() {
       const lastMessage = messages[messages.length - 1];
       if (lastMessage.role === 'assistant') {
         const utterance = new SpeechSynthesisUtterance(lastMessage.content);
+        utterance.rate = 1.15; // Slightly faster for natural interviewer feel
         synthRef.current?.speak(utterance);
       }
     }
