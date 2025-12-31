@@ -108,7 +108,7 @@ export default function Session() {
 
   const handleExit = async () => {
     completeInterview(interviewId);
-    setLocation("/practice");
+    setLocation(`/practice/${interviewId}/results`);
   };
   
   // Auto-scroll to bottom of chat
@@ -122,6 +122,7 @@ export default function Session() {
     if (!input.trim()) return;
     sendMessage(input);
     setInput("");
+    synthRef.current?.cancel(); // Stop AI if user starts speaking
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

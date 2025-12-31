@@ -11,6 +11,7 @@ import Practice from "@/pages/Practice";
 import Session from "@/pages/Session";
 import Resume from "@/pages/Resume";
 import Profile from "@/pages/Profile";
+import Results from "@/pages/Results";
 import { Loader2 } from "lucide-react";
 
 function Router() {
@@ -38,6 +39,7 @@ function Router() {
       <Route path="/" component={Dashboard} />
       <Route path="/practice" component={Practice} />
       <Route path="/practice/:id" component={Session} />
+      <Route path="/practice/:id/results" component={Results} />
       <Route path="/resume" component={Resume} />
       <Route path="/profile" component={Profile} />
       <Route component={NotFound} />
